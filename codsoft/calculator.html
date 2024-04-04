@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Calculator</title>
+    <link rel="stylesheet" href="calculator_styles.css">
+</head>
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const display = document.querySelector('.display');
+        let currentInput = '';
+        let previousInput = '';
+        let operation = null;
+
+        const updateDisplay = (value) => {
+            display.textContent = value;
+        };
+
+        const clearAll = () => {
+            currentInput = '';
+            previousInput = '';
+            operation = null;
+            updateDisplay('0');
+        };
+
+        const calculate = () => {
+            let result;
+            const prev = parseFloat(previousInput);
+            const current = parseFloat(currentInput);
+            if (isNaN(prev) || isNaN(current)) return;
+            switch (operation) {
+                case '+':
+                    result = prev + current;
+                    break;
+                case '-':
+                    result = prev - current;
+                    break;
+                case '*':
+                    result = prev * current;
+                    break;
+                case '/':
+                    if(current !== 0){
+                        result = prev / current;
+                    } else {
+                        alert("Cannot divide by zero");
+                        return;
+                    }
+                    break;
+                default:
+                    return;
+            }
+            currentInput = result.toString();
+            operation = null;
+            previousInput = '';
+        };
+
+        document.querySelector('.buttons').addEventListener('click', (event) => {
+            if (event.target.matches('.button')) {
+                const key = event.target.textContent;
+                if (key === 'C') {
+                    clearAll();
+                } else if (key === '=') {
+                    calculate();
+                    updateDisplay(currentInput);
+                } else if (key === '+' || key === '-' || key === '*' || key === '/') {
+                    if (currentInput === '' && previousInput === '') {
+                        // Do nothing if there is no input yet
+                        return;
+                    } else if (currentInput === '') {
+                        operation = key;
+                        return;
+                    }
+                    if (previousInput !== '') {
+                        calculate();
+                    } else {
+                        previousInput = currentInput;
+                    }
+                    operation = key;
+                    currentInput = '';
+                } else {
+                    if (currentInput.length < 10) { // Prevents too long numbers
+                        currentInput += key;
+                        updateDisplay(currentInput);
+                    }
+                }
+            }
+        });
+    });
+</script>
+
+
+<body>
+    <div class="calculator">
+        <div class="display">0</div>
+        <div class="buttons">
+            <button class="button">C</button>
+            <button class="button">+</button>
+            <button class="button">-</button>
+            <button class="button">/</button>
+            <button class="button">7</button>
+            <button class="button">8</button>
+            <button class="button">9</button>
+            <button class="button">*</button>
+            <button class="button">4</button>
+            <button class="button">5</button>
+            <button class="button">6</button>
+            <button class="button">.</button>
+            <button class="button">1</button>
+            <button class="button">2</button>
+            <button class="button">3</button>
+            <button class="button">0</button>
+            <button class="button equal">=</button>
+        </div>
+    </div>
+</body>
+</html>
